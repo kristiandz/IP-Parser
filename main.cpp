@@ -5,6 +5,10 @@
 #include <sstream>
 #include <stdlib.h>
 
+#define PORT 443
+#define LINES 50
+#define TIMEOUT 20
+
 using namespace std;
 
 int generateList(int);
@@ -47,7 +51,33 @@ int main ()
 
 int generateList(int type)
 {
-	cout << "Test";
+	ostringstream oss;
+	string bashCommand;
+	const char *command;
+	switch(type)
+	{
+		case 0:
+			cout << "Canceling the generation" << endl;
+			return 0;
+		break;
+		case 1:	
+			cout << "IFTOP Generation selected." << endl;
+			
+			oss << "iftop -f \"dst port "<<PORT<<"\" -PNtnb -s "<<TIMEOUT<<" -L "<<LINES<<" > log.txt";
+			bashCommand = oss.str();
+			command = bashCommand.c_str(); 	
+			system(command);
+			return 0;
+		break;
+		case 2:
+			cout << "TCPDUMP Generation selected." << endl;
+			oss << "tcpdump -f \"dst port "<<PORT<<"\" -vttttq > log.txt";
+			bashCommand = oss.str();
+			command = bashCommand.c_str(); 	
+			system(command);
+			return 0;
+		break;
+	}
 }
 
 int parseList(int type)
