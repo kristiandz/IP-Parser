@@ -57,7 +57,33 @@ int main ()
 				}	
 			break;
 			case 2:
-			break;
+				system("clear");
+				cout << "Select which log format to parse the IP's from \n\n[1 Parse IFTOP log] [2 Parse TCPDUMP log] [0 Cancel parsing]\n\nEnter selection: ";
+				while(selection)
+				{
+					cin >> i;
+					if(i >= 0 && i <= 2)
+					{
+						i = parseList(i);
+						if(i > 0)
+						{
+							cout << "Successfully parsed IP list, found " << i << ((i>1) ? " matches.":" match." )<< "\n" << endl;
+							i = 1;
+							sleep(3);
+						}
+						else if(i == 0)
+						{
+							cout << "No matches in the log file\n" << endl;
+							sleep(2);
+							i = 1;
+							selection = false;
+						}
+						selection = false;
+					}
+					else cout << "Enter selection: ";
+				}
+				selection = true;
+				break;
 			case 3:
 			break;
 			case 4:
@@ -105,8 +131,58 @@ int generateList(int type)
 
 int parseList(int type)
 {
-	cout << "Test";
-	return 0;
+	ifstream file("log.txt"); //Hardcoding file name since the program outputs the same
+	ofstream parsed_file("parsed_list.txt");
+	string str;
+	int counter = 0;
+	if(file) 
+	{
+    	ostringstream ss;
+    	ss << file.rdbuf();
+    	str = ss.str();
+	}
+	switch(type)
+	{
+		case 0:
+			cout << "Canceled IP parsing, returning to main menu" << endl;
+			sleep(1);
+			break;
+		case 1:
+		{
+			boost::regex iftop_regex("(?:[0-9]{1,3}.){3}[0-9]{1,3}(?=.[0-9]{1,5}[ ]{1,40}<=)"); // Regex for iftop with no hostname resolution!
+			boost::sregex_token_iterator end;
+			boost::sregex_token_iterator iter(str.begin(), str.end(), iftop_regex, 0);
+			for( ; iter != end; ++iter )
+			{
+				cout << "Match: " << *iter << endl;
+				parsed_file << *iter << endl;
+				counter++;
+			}
+			file.close(); 
+			parsed_file.close();
+			return counter;
+			break;
+		}
+		case 2:
+		{
+			boost::regex tcpdump_regex("(?:[0-9]{1,3}.){3}[0-9]{1,3}(?=.[0-9]{1,5} >)"); // Regex for tcpdump with no hostname resolution!
+			boost::sregex_token_iterator end;
+			boost::sregex_token_iterator iter(str.begin(), str.end(), tcpdump_regex, 0);
+			for( ; iter != end; ++iter )
+			{
+				cout << "Match: " << *iter << endl;
+				parsed_file << *iter << endl;
+				counter++;
+			}
+			file.close(); 
+			parsed_file.close();
+			return counter;
+			break;
+		}
+	}
+	file.close(); 
+	parsed_file.close();
+	return -1;
 }
 
 int generateOutput()
