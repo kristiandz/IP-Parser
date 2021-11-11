@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
-#include <regex>
 #include <iterator>
 #include <sstream>
+#include <fstream>
 
+#include <boost/regex.hpp>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -15,9 +16,9 @@ using namespace std;
 
 int generateList(int);
 int parseList(int);
+int previewList();
+int checkList();
 int updateFirewall();
-int generateOutput();
-
 
 int main ()
 {	
