@@ -3,8 +3,9 @@
 #include <iterator>
 #include <sstream>
 #include <fstream>
+#include <regex>
 
-#include <boost/regex.hpp>
+#include <mariadb/conncpp.hpp>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -150,9 +151,9 @@ int parseList(int type)
 			break;
 		case 1:
 		{
-			boost::regex iftop_regex("(?:[0-9]{1,3}.){3}[0-9]{1,3}(?=.[0-9]{1,5}[ ]{1,40}<=)"); // Regex for iftop with no hostname resolution!
-			boost::sregex_token_iterator end;
-			boost::sregex_token_iterator iter(str.begin(), str.end(), iftop_regex, 0);
+			regex iftop_regex("(?:[0-9]{1,3}.){3}[0-9]{1,3}(?=.[0-9]{1,5}[ ]{1,40}<=)"); // Regex for iftop with no hostname resolution!
+			sregex_token_iterator end;
+			sregex_token_iterator iter(str.begin(), str.end(), iftop_regex, 0);
 			for( ; iter != end; ++iter )
 			{
 				cout << "Match: " << *iter << endl;
@@ -166,9 +167,9 @@ int parseList(int type)
 		}
 		case 2:
 		{
-			boost::regex tcpdump_regex("(?:[0-9]{1,3}.){3}[0-9]{1,3}(?=.[0-9]{1,5} >)"); // Regex for tcpdump with no hostname resolution!
-			boost::sregex_token_iterator end;
-			boost::sregex_token_iterator iter(str.begin(), str.end(), tcpdump_regex, 0);
+			regex tcpdump_regex("(?:[0-9]{1,3}.){3}[0-9]{1,3}(?=.[0-9]{1,5} >)"); // Regex for tcpdump with no hostname resolution!
+			sregex_token_iterator end;
+			sregex_token_iterator iter(str.begin(), str.end(), tcpdump_regex, 0);
 			for( ; iter != end; ++iter )
 			{
 				cout << "Match: " << *iter << endl;
