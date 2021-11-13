@@ -87,7 +87,10 @@ int main ()
 				selection = true;
 				break;
 			case 3:
-			break;
+				previewList();
+				cout<<"\n\033[0;33mPress ENTER to continue...\033[0;37m";
+				cin.ignore().get();
+				break;
 			case 4:
 			break;
 			case 5:
@@ -187,7 +190,22 @@ int parseList(int type)
 	return -1;
 }
 
-int generateOutput()
+int previewList()
+{
+	ifstream parsed_file("parsed_list.txt");
+	string str; 
+	if(parsed_file) 
+	{
+    	ostringstream ss;
+    	ss << parsed_file.rdbuf();
+    	str = ss.str();
+	}
+	cout << "\nStored values: \n" << str << endl;
+	parsed_file.close();
+	return 0;
+}
+
+int checkList()
 {
 	cout << "Test";
 	return 0;
