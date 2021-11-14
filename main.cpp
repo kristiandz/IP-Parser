@@ -207,7 +207,43 @@ int previewList()
 
 int checkList()
 {
-	cout << "Test";
+	ifstream parsed_list("parsed_list.txt");
+	ofstream checked_list("checked_list.txt");
+	vector<string> ip; string line;
+	if(parsed_list)
+		while (getline(parsed_list, line))
+			ip.push_back(line);	
+	try 
+	{
+        sql::Driver* driver = sql::mariadb::get_driver_instance();
+        sql::SQLString url("jdbc:mariadb://localhost:3306/database-name-here"); // Fill in the data
+        sql::Properties properties({{"user", "enter-your-username-here"}, {"password", "enter-your-password-here"}}); // Fill in the data
+        unique_ptr<sql::Connection> conn(driver->connect(url, properties));
+		try 
+		{
+			unique_ptr<sql::Statement> stmnt(conn->createStatement());
+			for(auto i = ip.begin(); i < ip.end(); i++)
+			{
+				sql::ResultSet *res = stmnt->executeQuery("SELECT id FROM clients WHERE clients.ip = \"" + *i + "\"" ); // Specific query for my use, the program will be updated for a more generic use overall
+				if(!res->next())
+					if(checked_list)
+						checked_list << *i << endl;
+			}
+		}
+		catch(sql::SQLException& e)
+		{
+			cerr << "Error selecting tasks: " << e.what() << endl;
+		}
+		conn->close();
+	}
+    catch(sql::SQLException& error)
+	{
+        cerr << "\nError Connecting to MariaDB Platform: " << error.what() << endl;
+        return 1;
+    }
+	parsed_list.close();
+	checked_list.close();
+	sleep(2);
 	return 0;
 }
 
