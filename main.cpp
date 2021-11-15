@@ -205,7 +205,7 @@ int previewList()
 	return 0;
 }
 
-int checkList()
+int checkList() // Check ipaliases as well
 {
 	ifstream parsed_list("parsed_list.txt");
 	ofstream checked_list("checked_list.txt");
@@ -229,10 +229,11 @@ int checkList()
 					if(checked_list)
 						checked_list << *i << endl;
 			}
+			cout << "";
 		}
 		catch(sql::SQLException& e)
 		{
-			cerr << "Error selecting tasks: " << e.what() << endl;
+			cerr << "Error while running the query: " << e.what() << endl;
 		}
 		conn->close();
 	}
@@ -249,6 +250,24 @@ int checkList()
 
 int updateFirewall()
 {
-	cout << "Test";
+	ostringstream oss;
+	string bashCommand;
+	const char *command;
+	string line;
+	ifstream checked_list("checked_list.txt");
+	ofstream blacklist("/etc/csf/blacklists/parser_blacklist.txt", ofstream::app);
+	if(checked_list && blacklist)
+	{
+		while (getline(checked_list, line))
+			blacklist << line << " # add geoip info here..." << endl;
+	}
+	cout << "Updated the csf deny list" << endl;
+	oss << "csf -r";
+	bashCommand = oss.str();
+	command = bashCommand.c_str();
+	system(command);
+	sleep(1);
+	cout << "\nRestarted CSF firewall to apply the blacklist" << endl;
+	sleep(3);
 	return 0;
 }
