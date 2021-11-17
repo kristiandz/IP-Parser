@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 #define PORT 443
-#define LINES 50
+#define LINES 2000
 #define TIMEOUT 20
 
 using namespace std;
@@ -21,7 +21,7 @@ int previewList();
 int checkList();
 int updateFirewall();
 
-int main ()
+int main()
 {	
 	bool selection = true;
 	int i = 1;
@@ -29,7 +29,7 @@ int main ()
 	{
 		system("clear");
 		cout << "IP Parser tool started \nType the number in front of the text to select an option.\n\n[1 Generate IP List] [2 Parse IP List] [3 Preview IP List] [4 Generate output file] [5 Update Firewall] [0 Exit]\n\nEnter selection: ";
-		cin >> i;
+		cin >> i; // Restrict chars,return to loop
 		switch(i)
 		{
 			case 0:
@@ -48,16 +48,22 @@ int main ()
 						if(i == 0)
 						{
 							cout << "Successfully generated IP list\n" << endl;
-							sleep(2);
+							sleep(3);
 							i = 1;
+						}
+						else if(i == -1)
+						{
+							sleep(1);
+							cout << "Returning to main menu..." << endl;
 						}
 						else
 							cout << "Failed to obtain the IP list\n" << endl;
 						selection = false;
 					}
 					else cout << "Enter selection: ";
-				}	
-			break;
+				}
+				selection = true;	
+				break;
 			case 2:
 				system("clear");
 				cout << "Select which log format to parse the IP's from \n\n[1 Parse IFTOP log] [2 Parse TCPDUMP log] [0 Cancel parsing]\n\nEnter selection: ";
@@ -92,11 +98,14 @@ int main ()
 				cin.ignore().get();
 				break;
 			case 4:
-			break;
+				checkList();
+				break;
 			case 5:
-			break;
+				updateFirewall();
+				break;
 			default:
 				cout << "\n> Valid selection are numbers from 0-5, please try again" << endl;
+				sleep(1);
 			break;
 		}
 	}
@@ -112,7 +121,7 @@ int generateList(int type)
 	{
 		case 0:
 			cout << "\nCanceling the generation\n" << endl;
-			return 0;
+			return -1;
 		break;
 		case 1:	
 			cout << "\nIFTOP Generation selected." << endl;
@@ -229,7 +238,7 @@ int checkList() // Check ipaliases as well
 					if(checked_list)
 						checked_list << *i << endl;
 			}
-			cout << "";
+			cout << "Finished the IP check, you can find the malicious IP's in the checked_list file." << endl;
 		}
 		catch(sql::SQLException& e)
 		{
@@ -244,7 +253,7 @@ int checkList() // Check ipaliases as well
     }
 	parsed_list.close();
 	checked_list.close();
-	sleep(2);
+	sleep(3);
 	return 0;
 }
 
@@ -271,3 +280,12 @@ int updateFirewall()
 	sleep(3);
 	return 0;
 }
+
+/* 
+WARNING: While testing this please don't lock yourself out, be careful not to add your IP to the blacklist before running this. 
+Preview the block list if you are not sure what are you doing. Depending on the IP generation, you may pull your IP as well, 
+and if the new ip is not in the mysql database, it will be included, or for testing purposes if you are trying different ports
+or manually adding ip combinations.
+*/
+
+// TODO: Make a separate function for bash commands, mysql as well
