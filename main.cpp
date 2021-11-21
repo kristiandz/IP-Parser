@@ -147,9 +147,8 @@ int parseList(int type)
 {
 	ifstream file("log.txt"); //Hardcoding file name since the program outputs the same
 	ofstream parsed_file("parsed_list.txt");
-	string str;
-	int counter = 0;
-	if(file) 
+	string str;	int counter = 0;
+	if(file && parsed_file) 
 	{
     	ostringstream ss;
     	ss << file.rdbuf();
