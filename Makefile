@@ -1,5 +1,6 @@
 CC = g++
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -lmariadbcpp
+STD = -std=c++11
 NAME = IPParser
 
 .PHONY: all clean
@@ -10,10 +11,10 @@ OBJECTS = main.o
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) -std=c++11
+	$(CC) $(CFLAGS) -o ./bin/$(NAME) ./src/$(OBJECTS) $(STD)
 
-main.o:
-	$(CC) $(CFLAGS) -c $(SOURCES) -std=c++11
+main.o: ./src/$(SOURCES)
+	$(CC) $(CFLAGS) -c ./src/$(SOURCES) -o ./src/$@ $(STD)
   
 clean:
-	rm -f $(OBJECTS) $(NAME)
+	rm -f ./src/$(OBJECTS) ./bin/$(NAME)
