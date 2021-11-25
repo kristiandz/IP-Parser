@@ -9,9 +9,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define PORT 443
-#define LINES 2000
-#define TIMEOUT 20
+#define PORT 28950
+#define LINES 20000
+#define TIMEOUT 45
 
 using namespace std;
 
@@ -28,17 +28,17 @@ int main()
 	while(i)
 	{
 		system("clear");
-		cout << "IP Parser tool started \nType the number in front of the text to select an option.\n\n[1 Generate IP List] [2 Parse IP List] [3 Preview IP List] [4 Generate output file] [5 Update Firewall] [0 Exit]\n\nEnter selection: ";
+		cout << "\033[4;32mIP PARSER | FIREWALL UPDATER FOR ANTIDDOS\n\n\033[0;37mType the number in front of the text to select an option.\n\n\033[0;32m[1 Generate IP List] [2 Parse IP List] [3 Preview IP List] [4 Database and Geolocation check] [5 Update Firewall] [0 Exit]\n\n\033[0;37mEnter selection: ";
 		cin >> i; // Restrict chars,return to loop
 		switch(i)
 		{
 			case 0:
-				cout << "\nExiting the program\n" << endl;
+				cout << "\n\033[1;32mExiting the program\n\033[0;37m" << endl;
 				return 0;
-			break;
+				break;
 			case 1:
 				system("clear");
-				cout << "Select the method of extracting IP's from the network \n\n[1 Generate IP's using IFTOP] [2 Generate IP's using TCPDUMP] [0 Cancel Generation]\n\nEnter selection: ";
+				cout << "Select the method of extracting IP's from the network \n\n\033[0;32m[1 Generate IP's using IFTOP] [2 Generate IP's using TCPDUMP] [0 Cancel generation]\n\n\033[0;37mEnter selection: ";
 				while(selection)
 				{
 					cin >> i;
@@ -47,7 +47,7 @@ int main()
 						i = generateList(i);
 						if(i == 0)
 						{
-							cout << "Successfully generated IP list\n" << endl;
+							cout << "\033[1;32mSuccessfully generated IP list\n\033[0;37m" << endl;
 							sleep(3);
 							i = 1;
 						}
@@ -57,7 +57,7 @@ int main()
 							cout << "Returning to main menu..." << endl;
 						}
 						else
-							cout << "Failed to obtain the IP list\n" << endl;
+							cout << "\033[0;33mFailed to obtain the IP list\n\033[0;37m" << endl;
 						selection = false;
 					}
 					else cout << "Enter selection: ";
@@ -66,7 +66,7 @@ int main()
 				break;
 			case 2:
 				system("clear");
-				cout << "Select which log format to parse the IP's from \n\n[1 Parse IFTOP log] [2 Parse TCPDUMP log] [0 Cancel parsing]\n\nEnter selection: ";
+				cout << "Select which log format to parse the IP's from \n\n\033[0;32m[1 Parse IFTOP log] [2 Parse TCPDUMP log] [0 Cancel parsing]\n\n\033[0;37mEnter selection: ";
 				while(selection)
 				{
 					cin >> i;
@@ -75,13 +75,13 @@ int main()
 						i = parseList(i);
 						if(i > 0)
 						{
-							cout << "Successfully parsed IP list, found " << i << ((i>1) ? " matches.":" match." )<< "\n" << endl;
+							cout << "\033[1;32mSuccessfully parsed IP list, found " << i << ((i>1) ? " matches.":" match." )<< "\n\033[0;37m" << endl;
 							i = 1;
 							sleep(3);
 						}
 						else if(i == 0)
 						{
-							cout << "No matches in the log file\n" << endl;
+							cout << "\033[0;33mNo matches in the log file\n\033[0;37m" << endl;
 							sleep(2);
 							i = 1;
 							selection = false;
@@ -104,7 +104,7 @@ int main()
 				updateFirewall();
 				break;
 			default:
-				cout << "\n> Valid selection are numbers from 0-5, please try again" << endl;
+				cout << "\n\033[0;33m> Valid selection are numbers from 0-5, please try again\033[0;37m" <<endl;
 				sleep(1);
 			break;
 		}
@@ -120,20 +120,20 @@ int generateList(int type)
 	switch(type)
 	{
 		case 0:
-			cout << "\nCanceling the generation\n" << endl;
+			cout << "\033[0;33mCanceling the generation\n\033[0;37m";
 			return -1;
 		break;
 		case 1:	
-			cout << "\nIFTOP Generation selected." << endl;
-			oss << "iftop -f \"dst port "<<PORT<<"\" -PNtnb -s "<<TIMEOUT<<" -L "<<LINES<<" > log.txt";
+			cout << "\n\033[1;32mIFTOP Generation selected.\033[0;37m" << endl;
+			oss << "iftop -f \"dst port "<<PORT<<"\" -PNtnb -s "<<TIMEOUT<<" -L "<<LINES<<" > ./log.txt";
 			bashCommand = oss.str();
 			command = bashCommand.c_str(); 	
 			system(command);
 			return 0;
 		break;
 		case 2:
-			cout << "\nTCPDUMP Generation selected." << endl;
-			oss << "tcpdump -f \"dst port "<<PORT<<"\" -vttttq > log.txt & \nid=$!; sleep 5; kill $id ";
+			cout << "\n\033[1;32mTCPDUMP Generation selected.\033[0;37m" << endl;
+			oss << "tcpdump -f \"dst port "<<PORT<<"\" -vnttttq > ./log.txt & \nid=$!; sleep 10; kill $id ";
 			bashCommand = oss.str();
 			command = bashCommand.c_str(); 	
 			system(command);
@@ -147,7 +147,7 @@ int parseList(int type)
 {
 	ifstream file("log.txt"); //Hardcoding file name since the program outputs the same
 	ofstream parsed_file("parsed_list.txt");
-	string str;	int counter = 0;
+	string str; int counter = 0;
 	if(file && parsed_file) 
 	{
     	ostringstream ss;
@@ -157,7 +157,7 @@ int parseList(int type)
 	switch(type)
 	{
 		case 0:
-			cout << "Canceled IP parsing, returning to main menu" << endl;
+			cout << "\033[0;33mCanceled IP parsing, returning to main menu\033[0;37m" << endl;
 			sleep(1);
 			break;
 		case 1:
@@ -208,12 +208,12 @@ int previewList()
     	ss << parsed_file.rdbuf();
     	str = ss.str();
 	}
-	cout << "\nStored values: \n" << str << endl;
+	cout << "\n\033[1;32mStored values: \033[0;37m\n" << str << endl;
 	parsed_file.close();
 	return 0;
 }
 
-int checkList() // Check ipaliases as well
+int checkList()
 {
 	ifstream parsed_list("parsed_list.txt");
 	ofstream checked_list("checked_list.txt");
@@ -237,7 +237,7 @@ int checkList() // Check ipaliases as well
 					if(checked_list)
 						checked_list << *i << endl;
 			}
-			cout << "Finished the IP check, you can find the malicious IP's in the checked_list file." << endl;
+			cout << "\033[0;32mFinished the IP check, you can find the malicious IP's in the checked_list file.\033[0;37m" << endl;
 		}
 		catch(sql::SQLException& e)
 		{
@@ -247,7 +247,7 @@ int checkList() // Check ipaliases as well
 	}
     catch(sql::SQLException& error)
 	{
-        cerr << "\nError Connecting to MariaDB Platform: " << error.what() << endl;
+        cerr << "\nError Connecting to MariaDB Platform: \033[0;33m" << error.what() << "\033[0;37m" << endl;
         return 1;
     }
 	parsed_list.close();
@@ -269,13 +269,13 @@ int updateFirewall()
 		while (getline(checked_list, line))
 			blacklist << line << " # add geoip info here..." << endl;
 	}
-	cout << "Updated the csf deny list" << endl;
+	cout << "\033[0;32mUpdated the csf deny list\033[0;37m" << endl;
 	oss << "csf -r";
 	bashCommand = oss.str();
 	command = bashCommand.c_str();
 	system(command);
 	sleep(1);
-	cout << "\nRestarted CSF firewall to apply the blacklist" << endl;
+	cout << "\n\033[0;32mRestarted CSF firewall to apply the blacklist\033[0;37m" << endl;
 	sleep(3);
 	return 0;
 }
