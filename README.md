@@ -15,7 +15,6 @@ You should have a databse of valid IP's from your existing services whom your tr
 ## Instructions
 
 ### Dependencies
-![badge](https://user-images.githubusercontent.com/36107078/151216485-0a3499a5-2cbe-4788-9482-8b25a0dddc39.svg)
 
 - You will need GCC 4.9.2 or higher, if you use anything older you will have trouble with regex libraries, boost will be required in that case. Regex was patched on 4.9.2 and will work out of the box.
 - MariaDB [C++ connector](https://mariadb.com/docs/clients/mariadb-connectors/connector-cpp/)
