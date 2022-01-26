@@ -13,11 +13,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: configure
-      run: ./configure
+    - name: setup the environment
+      run: |
+        sudo apt install mariadb-server
+        sudo apt install wget
+        sudo apt install libmariadb3 libmariadb-dev
+        wget https://dlm.mariadb.com/1683454/Connectors/cpp/connector-cpp-1.0.1/mariadb-connector-cpp-1.0.1-ubuntu-groovy-amd64.tar.gz
+        sudo tar -xvzf mariadb-connector-cpp-*.tar.gz
+        cd mariadb-connector-cpp-*/
+        sudo install -d /usr/include/mariadb/conncpp
+        sudo install -d /usr/include/mariadb/conncpp/compat
+        sudo cp -Rf include/mariadb/* /usr/include/mariadb/
+        sudo cp -Rf include/mariadb/conncpp/* /usr/include/mariadb/conncpp
+        sudo cp -Rf include/mariadb/conncpp/compat/* /usr/include/mariadb/conncpp/compat
+        sudo install -d /usr/lib/mariadb
+        sudo install -d /usr/lib/mariadb/plugin
+        sudo cp -Rf lib64/mariadb/libmariadbcpp.so /usr/lib
+        sudo cp -Rf lib64/mariadb/plugin/* /usr/lib/mariadb/plugin
     - name: make
       run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
