@@ -13,7 +13,7 @@ all: $(NAME)
 $(NAME): $(OBJECTS)
 	$(CC) $(CFLAGS) -o ./bin/$(NAME) ./src/$(OBJECTS) $(STD) -lmariadbcpp
 
-main.o: ./src/$(SOURCES)
+$(OBJECTS): ./src/$(SOURCES)
 	$(CC) $(CFLAGS) -c ./src/$(SOURCES) -o ./src/$@ $(STD) -lmariadbcpp
   
 clean:
